@@ -7,7 +7,7 @@ client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`)
 })
 
-client.login(process.env.TOKEN)
+client.login(process.env.TOKEN || Secret.token)
 
 module.exports = {
 	client,
