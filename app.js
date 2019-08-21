@@ -15,5 +15,3 @@ module.exports = {
 
 require("./Services/ServerStatus")
 require("./Services/Music")
-
-require("http").createServer().listen(3000)
