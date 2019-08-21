@@ -14,3 +14,4 @@ module.exports = {
 }
 
 require("./Services/ServerStatus")
+require("./Services/Music")
