@@ -7,7 +7,7 @@ client.on('ready', () => {
 	console.log(`Logged in as ${client.user.tag}!`)
 })
 
-client.login(Secret.token)
+client.login(process.env.TOKEN)
 
 module.exports = {
 	client,
@@ -15,3 +15,5 @@ module.exports = {
 
 require("./Services/ServerStatus")
 require("./Services/Music")
+
+require("http").createServer().listen(3000)
