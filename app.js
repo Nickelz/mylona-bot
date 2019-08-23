@@ -1,4 +1,3 @@
-const http = require("http")
 const { Client } = require("discord.js")
 // const Secret = require("./Objects/Auth.json")
 
@@ -17,4 +16,4 @@ module.exports = {
 require("./Services/ServerStatus")
 require("./Services/Music")
 
-http.createServer().listen(process.env.PORT || 3000)
+require('http').createServer().listen(3000)
