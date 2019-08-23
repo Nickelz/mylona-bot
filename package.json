@@ -4,8 +4,7 @@
   "description": "Mylona discord bot",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "build": "npm start"
+    "start": "node app.js"
   },
   "author": "Nickelz",
   "license": "ISC",
