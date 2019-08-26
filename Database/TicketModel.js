@@ -27,6 +27,11 @@ var ticketSchema = new Schema({
 		required: "Info cannot be empty.",
 	},
 
+	closed: {
+		type: String,
+		default: ""
+	},
+
 	timestamp: {
 		type: Date,
 		default: Date.now

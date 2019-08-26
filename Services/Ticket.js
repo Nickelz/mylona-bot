@@ -11,20 +11,22 @@ const {
 	client
 } = require("./../app.js")
 
-let mongoose = require("./../Database/mongoose")
 let Ticket = require("./../Database/TicketModel")
 
 client.on("message", (message) => {
 	if (message.author.bot) return
 	if (!message.content.startsWith("!")) return
 
+	let args = message.content.split(" ")
+
 	if (message.content.startsWith("!new")) {
-		createNewTicket(message)
+		createNewTicket(message, args)
+	} else if (message.content.startsWith("!list")) {
+		listSupportTickets(message, args)
 	}
 })
 
-function createNewTicket(message) {
-	let args = message.content.split(" ")
+function createNewTicket(message, args) {
 	if (_.isEmpty(args[1])) return channel.send("Please use the correct syntax: !new [topic]")
 
 	let messageWithoutPrefix = message.content.slice(5)
@@ -37,23 +39,61 @@ function createNewTicket(message) {
 		info: messageWithoutPrefix,
 	})
 
-	ticket.save().then((ticket) => {
-		console.log(JSON.stringify(ticket, undefined, 2))
-		message.channel.send("Ticket saved in the database :DD")
-	}).catch((error) => {
-		message.channel.send("Failed to save ticket in the database :((")
-		console.error(`Failed to save ticket in the database: ${error}\n${JSON.stringify(ticket, undefined, 2)}`)
-	})
+	ticket
+		.save()
+		.then((ticket) => {
+			console.log(JSON.stringify(ticket, undefined, 2))
+			message.channel.send("Ticket saved in the database :DD")
+		})
+		.catch((error) => {
+			message.channel.send("Failed to save ticket in the database :((")
+			console.error(`Failed to save ticket in the database: ${error}\n${JSON.stringify(ticket, undefined, 2)}`)
+		})
 
+	printSupportTicketEmbed(ticket, message.channel)
+}
+
+function listSupportTickets(message, args) {
+	if (_.isEmpty(args[1]) || args[1] === "open") {
+		Ticket
+			.find()
+			.then((tickets) => {
+				tickets.length > 0 ? message.channel.send(`Listing (${tickets.length}) open support tickets`) : message.channel.send("Yay! There are 0 open tickets at the moment!")
+				tickets.forEach((ticket) => printSupportTicketEmbed(ticket, message.channel))
+			})
+			.catch((error) => console.error(`* Failed to list all support tickets:\n${error}`))
+	} else if (args[1] === "closed") {
+		Ticket
+			.find({
+				closed: {
+					$ne: ""
+				}
+			})
+			.then((tickets) => {
+				tickets.length > 0 ? message.channel.send(`Listing (${tickets.length}) closed support tickets`) : message.channel.send("There are no closed support tickets till this moment.")
+				tickets.forEach((ticket) => printSupportTicketEmbed(ticket, message.channel))
+			})
+			.catch((error) => console.error(`* Failed to list closed support tickets\n${error}`))
+	} else if (!isNaN(args[1])) {
+		Ticket
+			.findOne({
+				number: args[1]
+			})
+			.then((ticket) => {
+				!ticket ? message.channel.send(`Could not find ticket number ${args[1]}`) : printSupportTicketEmbed(ticket, message.channel)
+			})
+			.catch((error) => console.error(`* Failed to list support ticket number (${args[1]}):\n${error}`))
+	}
+}
+
+function printSupportTicketEmbed(ticket, channel) {
 	let embed = new RichEmbed()
-		.setColor("RED")
+		.setColor(ticket.closed ? "GREEN" : "RED")
 		.setTitle("Support Ticket")
-		.addField("Ticket Number", randomNumber, true)
-		.addField("Author", message.author, true)
-		.addField("Channel", message.channel, true)
-		.addField("Info", messageWithoutPrefix)
-		.setFooter("<@&613545261771522088>")
+		.addField("Ticket Number", ticket.number, true)
+		.addField("Author", ticket.author, true)
+		.addField("Channel", ticket.channel, true)
+		.addField("Info", ticket.info)
 
-	message.channel.send("Code has been updated")
-	message.channel.send(embed)
+	channel.send(embed)
 }
