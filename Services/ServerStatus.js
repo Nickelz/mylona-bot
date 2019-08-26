@@ -21,15 +21,15 @@ client.on('ready', () => {
 })
 
 client.on('message', (message) => {
-	if (message.content === "!mj") {
+	if (message.content === "!mg") {
 		if (message.member.roles.some(role => role.name === "Mylona Staff")) {
 
 			if (embed == null) {
 				embed = new RichEmbed()
 					.setTitle("Vanilla Server Status")
 					.setColor('GREEN')
-					.addField("Status", embedInfo.onlineStatus ? ":white_check_mark: Online" : ":red_circle: Offline")
-					.addField("Player Count", `${embedInfo.playerCount}/${embedInfo.playerMax}`)
+					.addField("Status", embedInfo.onlineStatus ? ":white_check_mark: Online" : ":red_circle: Offline", true)
+					.addField("Player Count", `${embedInfo.playerCount}/${embedInfo.playerMax}`, true)
 					.addField("Server IP", embedInfo.serverIP)
 					.setFooter(`${embedInfo.motd} — ${moment().format('DD/MM/YY LT')}`, embedInfo.favicon)
 			}
