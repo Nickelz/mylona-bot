@@ -14,7 +14,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongodb": "^3.3.0",
-    "mongoose": "^5.6.10",
+    "mongoose": "^5.7.5",
     "opusscript": "0.0.7",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
